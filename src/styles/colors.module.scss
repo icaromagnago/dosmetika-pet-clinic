@@ -1,0 +1,8 @@
+$color-primary: #05A78E ;
+$color-secondary: #2D3332;
+$color-background: #F1F8FF;
+
+:export {
+    colorPrimary: $color-primary;
+    colorSencondery: $color-secondary;
+}
