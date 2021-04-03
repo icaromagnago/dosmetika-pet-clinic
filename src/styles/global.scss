@@ -33,9 +33,20 @@ h1 {
     color: $color-secondary;
 }
 
-h1 {
+h2 {
     font-size: 3rem;             
     font-weight: bold;
     line-height: 4rem;
     color: $color-secondary;
+}
+
+h3 {
+    font-size: 2rem;             
+    font-weight: bold;
+    line-height: 3rem;
+    color: $color-secondary;  
+}
+
+p {
+    font-size: 1.4rem;
 }

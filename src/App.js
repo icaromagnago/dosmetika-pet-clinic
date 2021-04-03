@@ -6,7 +6,7 @@ import Routes from './routes';
 
 function App() {
   return (
-    <div className="app">
+    <div>
       <Header />
       <Routes />
     </div>
