@@ -2,7 +2,7 @@
 @import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css);
 
 .steps {
-    margin-top: 55px;
+    margin: 55px 0 30px;
 
     .container {
         width: 90%;
@@ -43,13 +43,7 @@
                         text-align: center;
                     }
 
-                    &.active div::before {
-                        content: '\f111';                   
-                        font-family: 'Font Awesome 5 Free';
-                        color: #FFF;
-                        font-size: 12px;
-                    }
-
+                   
                     & ~ ::after {
                         content: '';
                         position: absolute;
@@ -58,11 +52,31 @@
                         height: 4px;
                         top: calc(.75em - 2px);
                         background-color: rgba(45, 51, 50, 0.15);
+                        transition: background-color 0.3s ease;
                     }
 
+                    & ~ .active::after, ~ .done::after {
+                        background-color: $color-primary;
+                    }
+
+                    &.active div::before {
+                        content: '\f111' !important;                   
+                        font-family: 'Font Awesome 5 Free';
+                        color: #FFF;
+                        font-size: 1.2rem;
+                    }
+
+                    &.done div::before {
+                        content: '\f00c';
+                        font-family: 'Font Awesome 5 Free';
+                        color: #FFF;
+                        font-size: 1.2rem;
+                    }
+
+
                     span {
-                    font-size: 1.2rem;
-                    margin-top: 15px;
+                        font-size: 1.2rem;
+                        margin-top: 15px;
                     } 
                 }
             }
@@ -72,12 +86,89 @@
 
 .form-area {
     background-color: #FFF;
-    height: calc(100vh - 350px);
+    border-top: 1px solid rgba(45, 51, 50, 0.4);
+    height: calc(100% - 150px);
 
     .container {
         width: 90%;
         max-width: 830px;
-        margin: 55px auto;
+        margin: auto;
+        margin-bottom: 50px;
+
+        .step-content {
+            height: 250px;
+            animation: slide 0.3s ease;
+            
+            .time-select {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 30px;
+
+                .day-box {
+                    border: 2px solid rgba(45, 51, 50, 0.15);
+                    width: 150px;
+                    height: 155px;
+                    border-radius: 5px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    background-color: transparent;
+                    position: relative;
+                    padding: 10px 0;
+
+                    strong {
+                        font-size: 1.3rem
+                    }
+
+                    .times {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        text-align: center; 
+                        margin-top: 5px;                   
+                        overflow-y: auto;
+                        width: 100%;
+
+                        button {
+                            cursor: pointer;
+                            width: 90%;
+                            background-color: transparent;
+                            border: none;
+                            font-size: 1.4rem;
+                            color:rgba(45, 51, 50, 0.6);
+                            padding: 5px 0;
+                            position: relative;
+
+                            &:hover {
+                                background-color: $color-primary;
+                                color: #FFF;
+                                transition: all .3s ease;
+                            }
+
+                            &.selected {
+                                background-color: $color-primary;
+                                color: #FFF;
+                                transition: all .3s ease;
+                            }
+
+                            &.selected::before {
+                                content: '\f00c';
+                                font-family: 'Font Awesome 5 Free';
+                                transition: all .3s ease;
+                                position: absolute;
+                                left: 10px;
+                            }
+                        }
+                    }
+
+
+                    &.selected {
+                        border-color: $color-primary;
+                        transition: all .3s ease;
+                    }
+                }
+            }
+        }
 
         h3 {
             padding: 25px 0 10px;
@@ -130,5 +221,119 @@
                 }
             }
         }
+
+        .vets {
+            display: flex;
+            margin-top: 30px;
+            justify-content: space-between;
+
+            button {
+                cursor: pointer;
+                border: 2px solid rgba(45, 51, 50, 0.15);
+                width: 150px;
+                height: 155px;
+                border-radius: 5px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-around;
+                align-items: center;
+                background-color: transparent;
+                position: relative;
+
+                img {
+                    width: 66px;
+                    height: 66px;
+                    border-radius: 50%;
+                }
+
+                .vet-bio {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    align-items: center;
+
+                    strong {
+                        font-size: 1.2rem;
+                    }
+    
+                    span {
+                        font-size: 1.2rem;
+                        color:rgba(45, 51, 50, 0.6);
+                        margin-top: 5px;
+                    }
+                }
+
+                &:hover {
+                    border-color: $color-primary;
+                    transition: all .3s ease;
+                }
+
+                &.selected {
+                    border-color: $color-primary;
+                    color: $color-primary;
+                    transition: all .3s ease;
+
+                    svg  {
+                        path {
+                            fill: $color-primary;
+                            transition: all .3s ease;
+                        }
+
+                        &.check {
+                            position: absolute;
+                            top: 5px;
+                            right: 5px;
+                        }
+                    }
+                }
+            }
+        }
+
+        .footer {
+            margin-top: 100px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(45, 51, 50, 0.30);
+            padding-top: 25px;
+
+            .btn {
+                border: none;
+                padding: 15px 70px;
+                width: 200px;
+                height: 50px;
+                border-radius: 5px;
+                color: #FFF;
+                font-weight: bold;
+                cursor: pointer;
+
+                &.primary {
+                    background-color: $color-primary;
+
+                    &:hover {
+                        background-color: darken($color-primary, 5%);
+                        transition: all 0.3s ease;
+                    }
+    
+                }
+
+                &.secondary {
+                    border: 2px solid rgba(45, 51, 50, 0.15);
+                    color:rgba(45, 51, 50, 0.6);
+                    background: transparent;
+                }
+            }
+        }
+    }
+}
+
+@keyframes slide {
+    0% {
+        opacity: 0;
+        transform: translateX(-250px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
     }
 }
