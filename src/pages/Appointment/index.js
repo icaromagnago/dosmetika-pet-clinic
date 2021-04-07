@@ -1,6 +1,8 @@
 /* eslint-disable comma-dangle */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import { format } from 'date-fns';
+import pt from 'date-fns/locale/pt';
 
 import { GiSittingDog, GiCat, GiHummingbird, GiSquirrel } from 'react-icons/gi';
 import { FiCheck } from 'react-icons/fi';
@@ -30,6 +32,8 @@ const petIcons = {
 
 export default function Appointment() {
   const history = useHistory();
+
+  const [transitionClass, setTransictionClass] = useState('slide-left');
 
   const [steps, setSteps] = useState([
     { key: 'specialty', label: 'ESPECIALIDADE', isDone: false },
@@ -83,18 +87,30 @@ export default function Appointment() {
   const [selectedVet, setSelectedVet] = useState({});
 
   const [availableDates, setAvailableDates] = useState([
-    { date: '06/04/2021', times: ['09:00', '10:00', '14:00', '17:30'] },
-    { date: '07/04/2021', times: ['09:30', '10:30', '14:00', '17:30'] },
-    { date: '08/04/2021', times: ['08:30', '11:30', '15:00', '17:00'] },
-    { date: '09/04/2021', times: ['08:00', '11:00', '12:00', '15:00'] },
+    { date: '2021-04-06', times: ['09:00', '10:00', '14:00', '17:30'] },
+    { date: '2021-04-07', times: ['09:30', '10:30', '14:00', '17:30'] },
+    { date: '2021-04-08', times: ['08:30', '11:30', '15:00', '17:00'] },
+    { date: '2021-04-09', times: ['08:00', '11:00', '12:00', '15:00'] },
     {
-      date: '10/04/2021',
+      date: '2021-04-10',
       times: ['09:00', '11:00', '13:00', '15:00', '16:00', '17:00'],
     },
   ]);
 
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
+
+  useEffect(() => {
+    const dates = availableDates.map((d) => {
+      const date = new Date(d.date);
+      return {
+        ...d,
+        dateFormatted: format(date, "EEE'.' dd 'de' MMMM", { locale: pt }),
+      };
+    });
+
+    setAvailableDates(dates);
+  }, []);
 
   function handleDateSelection(date, time) {
     setSelectedDate(date);
@@ -111,6 +127,7 @@ export default function Appointment() {
     steps.find((step) => step.key === activeStep.key).isDone = true;
 
     setActiveStep(steps[index + 1]);
+    setTransictionClass('slide-left');
   }
 
   function handleBack() {
@@ -123,6 +140,7 @@ export default function Appointment() {
     steps.find((step) => step.key === activeStep.key).isDone = false;
 
     setActiveStep(steps[index - 1]);
+    setTransictionClass('slide-right');
   }
 
   return (
@@ -150,10 +168,10 @@ export default function Appointment() {
         </div>
       </section>
 
-      <section className="form-area">
+      <form className="form-area">
         <div className="container">
           {activeStep.key === steps[0].key && (
-            <div className="step-content">
+            <div className={`step-content ${transitionClass}`}>
               <h3>Tipo do pet</h3>
               <p>Selecione o tipo do pet para o atendimento</p>
 
@@ -184,7 +202,7 @@ export default function Appointment() {
           )}
 
           {activeStep.key === steps[1].key && (
-            <div className="step-content">
+            <div className={`step-content ${transitionClass}`}>
               <h3>Médico veterinário</h3>
               <p>Selecione o médico veterinário para atender o seu pet</p>
 
@@ -216,7 +234,7 @@ export default function Appointment() {
           )}
 
           {activeStep.key === steps[2].key && (
-            <div className="step-content">
+            <div className={`step-content ${transitionClass}`}>
               <h3>Horário de atendimento</h3>
               <p>Selecione o dia e o horário para a consulta</p>
 
@@ -227,7 +245,7 @@ export default function Appointment() {
                       selectedDate === day.date ? 'selected' : ''
                     }`}
                   >
-                    <strong>{day.date}</strong>
+                    <strong>{day.dateFormatted}</strong>
                     <div className="times">
                       {day.times.map((t) => (
                         <button
@@ -249,6 +267,90 @@ export default function Appointment() {
             </div>
           )}
 
+          {activeStep.key === steps[3].key && (
+            <div className={`step-content ${transitionClass}`}>
+              <div className="information">
+                <div>
+                  <h3>Dados do seu pet</h3>
+                  <div className="pet-information">
+                    <div className="inner-info">
+                      <label htmlFor="name">
+                        Nome:
+                        <input id="name" type="text" />
+                      </label>
+                      <label htmlFor="breed">
+                        Raça:
+                        <select>
+                          <option value="">Selecione...</option>
+                          <option value="Akita">Akita</option>
+                          <option value="Beagle">Beagle</option>
+                          <option value="Border Collie">Border Collie</option>
+                          <option value="Cane Corso">Cane Corso</option>
+                          <option value="Golden Retriever">
+                            Golden Retriever
+                          </option>
+                        </select>
+                      </label>
+                    </div>
+                    <div className="inner-info">
+                      <label htmlFor="gender">
+                        Sexo:
+                        <span className="gender-radio">
+                          <span>
+                            <input
+                              type="radio"
+                              name="gender"
+                              id="gender"
+                              value="M"
+                            />
+                            Macho
+                          </span>
+                          <span>
+                            <input
+                              type="radio"
+                              name="gender"
+                              id="gender"
+                              value="F"
+                            />
+                            Fêmea
+                          </span>
+                        </span>
+                      </label>
+
+                      <label htmlFor="age">
+                        Idade:
+                        <input id="age" type="text" />
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h3>Dados do tutor</h3>
+                  <div className="owner-information">
+                    <div>
+                      <label htmlFor="full-name">
+                        Nome Completo:
+                        <input id="full-name" type="text" />
+                      </label>
+                    </div>
+                    <div>
+                      <label htmlFor="email">
+                        Email:
+                        <input id="email" type="text" />
+                      </label>
+
+                      <label htmlFor="phone">
+                        Telefone:
+                        <input id="phone" type="text" />
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="footer">
             <button
               type="button"
@@ -262,7 +364,7 @@ export default function Appointment() {
             </button>
           </div>
         </div>
-      </section>
+      </form>
     </>
   );
 }
