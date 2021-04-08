@@ -1,0 +1,68 @@
+@import '../../styles/colors.module.scss';
+
+.success {
+    .container {
+        width: 90%;
+        max-width: 980px;
+        min-height: 450px;
+        margin: 55px auto;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+
+        animation: slide 1s ease;
+
+        .box-success {
+            width: 500px;
+            background-color: #FFF;
+            padding: 50px;
+            color: $color-secondary;
+            border: 1px solid rgba(45, 51, 50, 0.4);
+            position: relative;
+
+            .icon {
+                background-color: $color-primary;
+                color: #FFF;
+                text-align: center;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                position: absolute;
+                top: -16px;
+                left: calc(50% - 16px);
+            }
+
+            p {
+                & + p {
+                    margin-top: 15px;
+                }
+            }
+        }
+
+        a {
+            color: $color-primary;
+        }
+
+        a.link-back {
+            font-size: 1.2rem;
+            color: rgba(45, 51, 50, 0.6);
+            text-decoration: none;
+        }
+    }
+}
+
+@keyframes slide {
+    0% {
+        opacity: 0;
+        transform: translateX(150px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

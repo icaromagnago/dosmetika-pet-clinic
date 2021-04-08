@@ -121,7 +121,7 @@ export default function Appointment() {
     const index = steps.findIndex((step) => step.key === activeStep.key);
 
     if (index === steps.length - 1) {
-      return;
+      history.push('/success');
     }
 
     steps.find((step) => step.key === activeStep.key).isDone = true;

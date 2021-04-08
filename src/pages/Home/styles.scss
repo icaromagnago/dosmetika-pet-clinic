@@ -19,7 +19,7 @@ section.hero {
         min-height: 768px;
 
         .hero-text {
-            animation: slide 1.4s ease;
+            animation: slide-right 1.4s ease;
             padding-top: 90px;
     
             & > span {
@@ -44,7 +44,7 @@ section.hero {
                 border-radius: 4px;
                 margin-top: 20px;
                 transition: all 0.3s ease;
-                animation: slide 1.8s ease;
+                animation: slide-right 1.8s ease;
     
                 &:hover {
                     background-color: darken($color-primary, 5%);
@@ -71,7 +71,7 @@ section.hero {
             padding-bottom: 40px;
 
             div {
-                animation: slide 1.8s ease;
+                animation: slide-right 1.8s ease;
             }
 
             span {
@@ -84,17 +84,6 @@ section.hero {
                 font-size: 1.4rem;
             }
         }
-    }
-}
-
-@keyframes slide {
-    0% {
-        opacity: 0;
-        transform: translateX(-250px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateX(0);
     }
 }
 
