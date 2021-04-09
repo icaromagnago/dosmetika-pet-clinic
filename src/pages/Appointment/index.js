@@ -7,6 +7,8 @@ import pt from 'date-fns/locale/pt';
 import { GiSittingDog, GiCat, GiHummingbird, GiSquirrel } from 'react-icons/gi';
 import { FiCheck } from 'react-icons/fi';
 
+import RadioButton from '../../components/RadioButton';
+
 import './styles.scss';
 import colors from '../../styles/colors.module.scss';
 
@@ -99,6 +101,7 @@ export default function Appointment() {
 
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
+  const [selectedGender, setSelectedGender] = useState('');
 
   useEffect(() => {
     const dates = availableDates.map((d) => {
@@ -115,6 +118,10 @@ export default function Appointment() {
   function handleDateSelection(date, time) {
     setSelectedDate(date);
     setSelectedTime(time);
+  }
+
+  function handleGenderChange(e) {
+    setSelectedGender(e.target.value);
   }
 
   function handleNext() {
@@ -241,6 +248,7 @@ export default function Appointment() {
               <div className="time-select">
                 {availableDates.map((day) => (
                   <div
+                    key={day.date}
                     className={`day-box ${
                       selectedDate === day.date ? 'selected' : ''
                     }`}
@@ -249,6 +257,7 @@ export default function Appointment() {
                     <div className="times">
                       {day.times.map((t) => (
                         <button
+                          key={t}
                           type="button"
                           className={
                             selectedDate === day.date && selectedTime === t
@@ -293,30 +302,25 @@ export default function Appointment() {
                       </label>
                     </div>
                     <div className="inner-info">
-                      <label htmlFor="gender">
+                      <div>
                         Sexo:
-                        <span className="gender-radio">
-                          <span>
-                            <input
-                              type="radio"
-                              name="gender"
-                              id="gender"
-                              value="M"
-                            />
-                            Macho
-                          </span>
-                          <span>
-                            <input
-                              type="radio"
-                              name="gender"
-                              id="gender"
-                              value="F"
-                            />
-                            Fêmea
-                          </span>
-                        </span>
-                      </label>
-
+                        <div className="radio-group">
+                          <RadioButton
+                            id="male"
+                            changed={handleGenderChange}
+                            label="Macho"
+                            value="male"
+                            isSelected={selectedGender === 'male'}
+                          />
+                          <RadioButton
+                            id="female"
+                            changed={handleGenderChange}
+                            label="Fêmea"
+                            value="female"
+                            isSelected={selectedGender === 'female'}
+                          />
+                        </div>
+                      </div>
                       <label htmlFor="age">
                         Idade:
                         <input id="age" type="text" />

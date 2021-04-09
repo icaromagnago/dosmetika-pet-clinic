@@ -40,7 +40,8 @@
                         z-index: 10;
                         line-height: 1.5em;
                         border-radius: 50%; 
-                        text-align: center;
+                        display: flex;
+                        justify-content: center;
                     }
 
                    
@@ -209,23 +210,10 @@
                          
                       }
 
-                      .gender-radio {
-                          display: flex;
-                          margin-top: 8px;
-
-                          span {
-                              display: flex;
-                              align-items: center;
-                              margin-right: 25px;
-
-                              input {
-                                  margin-right: 5px;
-                                  cursor: pointer;
-                                  width: 14px;
-                                  height: 14px;
-                              }
-                          }
-                      }
+                    .radio-group {
+                        display: flex;
+                        margin-top: 5px;
+                    }
                   }
 
                   div.inner-info:last-child {
