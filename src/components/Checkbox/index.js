@@ -3,24 +3,22 @@ import React from 'react';
 
 import './styles.scss';
 
-export default function RadioButton({
+export default function Checkbox({
   id,
   name,
   changed,
   value,
   isSelected,
   label,
-  onFocus,
 }) {
   return (
-    <div className="RadioButton">
+    <div className="md-checkbox">
       <input
         id={id}
         name={name}
         onChange={changed}
-        onFocus={onFocus}
         value={value}
-        type="radio"
+        type="checkbox"
         checked={isSelected}
       />
       <label htmlFor={id}>{label}</label>

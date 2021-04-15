@@ -1,13 +1,16 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable comma-dangle */
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { format } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 
-import { GiSittingDog, GiCat, GiHummingbird, GiSquirrel } from 'react-icons/gi';
 import { FiCheck } from 'react-icons/fi';
 
+import InputMask from 'react-input-mask';
 import RadioButton from '../../components/RadioButton';
+import Checkbox from '../../components/Checkbox';
+import PetSelection from './PetSelection';
 
 import './styles.scss';
 import colors from '../../styles/colors.module.scss';
@@ -16,21 +19,6 @@ import juan from '../../assets/juan.png';
 import maria from '../../assets/maria.png';
 import alberto from '../../assets/alberto.png';
 import ana from '../../assets/ana.png';
-
-const petIcons = {
-  dog: {
-    icon: GiSittingDog,
-  },
-  cat: {
-    icon: GiCat,
-  },
-  bird: {
-    icon: GiHummingbird,
-  },
-  rodent: {
-    icon: GiSquirrel,
-  },
-};
 
 export default function Appointment() {
   const history = useHistory();
@@ -45,15 +33,6 @@ export default function Appointment() {
   ]);
 
   const [activeStep, setActiveStep] = useState(steps[0]);
-
-  const [petOptions, setPetOptions] = useState([
-    { id: 'dog', text: 'Cachorro' },
-    { id: 'cat', text: 'Gato' },
-    { id: 'bird', text: 'Ave' },
-    { id: 'rodent', text: 'Roedor' },
-  ]);
-
-  const [selectedPet, setSelectedPet] = useState({});
 
   const [vets, setVets] = useState([
     {
@@ -86,8 +65,6 @@ export default function Appointment() {
     },
   ]);
 
-  const [selectedVet, setSelectedVet] = useState({});
-
   const [availableDates, setAvailableDates] = useState([
     { date: '2021-04-06', times: ['09:00', '10:00', '14:00', '17:30'] },
     { date: '2021-04-07', times: ['09:30', '10:30', '14:00', '17:30'] },
@@ -99,9 +76,23 @@ export default function Appointment() {
     },
   ]);
 
+  const [selectedPet, setSelectedPet] = useState({});
+  const [selectedVet, setSelectedVet] = useState({});
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
-  const [selectedGender, setSelectedGender] = useState('');
+
+  const [petName, setPetName] = useState('');
+  const [petBreed, setPetBreed] = useState('');
+  const [petGender, setPetGender] = useState('');
+  const [petAge, setPetAge] = useState('');
+
+  const [ownerName, setOwnerName] = useState('');
+  const [ownerEmail, setOwnerEmail] = useState('');
+  const [ownerPhone, setOwnerPhone] = useState('');
+
+  const [vaccine, setVaccine] = useState(false);
+
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     const dates = availableDates.map((d) => {
@@ -120,21 +111,69 @@ export default function Appointment() {
     setSelectedTime(time);
   }
 
+  function handleFocus(e) {
+    const { name } = e.target;
+
+    const { [name]: removed, ...rest } = errors;
+
+    setErrors({ ...rest });
+  }
+
   function handleGenderChange(e) {
-    setSelectedGender(e.target.value);
+    setPetGender(e.target.value);
+    handleFocus(e);
+  }
+
+  function validate() {
+    const validationErrors = {};
+    if (petName.trim() === '') {
+      validationErrors.petName = 'O nome é obrigatório';
+    }
+
+    if (petBreed === '') {
+      validationErrors.petBreed = 'A raça é obrigatória';
+    }
+
+    if (petGender === '') {
+      validationErrors.petGender = 'O sexo é obrigatório';
+    }
+
+    if (petAge === '') {
+      validationErrors.petAge = 'A idade é obrigatória';
+    }
+
+    if (ownerName === '') {
+      validationErrors.ownerName = 'O nome é obrigatório';
+    }
+
+    if (ownerEmail === '') {
+      validationErrors.ownerEmail = 'O email é obrigatório';
+    }
+
+    if (ownerPhone === '') {
+      validationErrors.ownerPhone = 'O telefone é obrigatório';
+    }
+
+    return validationErrors;
   }
 
   function handleNext() {
     const index = steps.findIndex((step) => step.key === activeStep.key);
 
     if (index === steps.length - 1) {
-      history.push('/success');
+      const validationErrors = validate();
+
+      if (Object.keys(validationErrors).length === 0) {
+        history.push('/success');
+      }
+
+      setErrors({ ...validationErrors });
+    } else {
+      steps.find((step) => step.key === activeStep.key).isDone = true;
+
+      setActiveStep(steps[index + 1]);
+      setTransictionClass('slide-left');
     }
-
-    steps.find((step) => step.key === activeStep.key).isDone = true;
-
-    setActiveStep(steps[index + 1]);
-    setTransictionClass('slide-left');
   }
 
   function handleBack() {
@@ -178,34 +217,13 @@ export default function Appointment() {
       <form className="form-area">
         <div className="container">
           {activeStep.key === steps[0].key && (
-            <div className={`step-content ${transitionClass}`}>
-              <h3>Tipo do pet</h3>
-              <p>Selecione o tipo do pet para o atendimento</p>
-
-              <div className="petOptions">
-                {petOptions.map((pet) => {
-                  const { icon: Icon } = petIcons[pet.id];
-                  return (
-                    <button
-                      key={pet.id}
-                      type="button"
-                      className={selectedPet.id === pet.id ? 'selected' : ''}
-                      onClick={() => setSelectedPet(pet)}
-                    >
-                      {selectedPet.id === pet.id && (
-                        <FiCheck
-                          size={20}
-                          className="check"
-                          color={colors.colorPrimary}
-                        />
-                      )}
-                      <Icon size={40} />
-                      <span>{pet.text}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
+            <PetSelection
+              selectedPet={selectedPet}
+              setSelectedPet={setSelectedPet}
+              transitionClass={transitionClass}
+              handleBack={handleBack}
+              handleNext={handleNext}
+            />
           )}
 
           {activeStep.key === steps[1].key && (
@@ -236,6 +254,23 @@ export default function Appointment() {
                     </div>
                   </button>
                 ))}
+              </div>
+              <div className="footer">
+                <button
+                  type="button"
+                  className="btn secondary"
+                  onClick={handleBack}
+                >
+                  VOLTAR
+                </button>
+                <button
+                  type="button"
+                  disabled={Object.keys(selectedVet).length === 0}
+                  className="btn primary"
+                  onClick={handleNext}
+                >
+                  AVANÇAR
+                </button>
               </div>
             </div>
           )}
@@ -273,6 +308,24 @@ export default function Appointment() {
                   </div>
                 ))}
               </div>
+
+              <div className="footer">
+                <button
+                  type="button"
+                  className="btn secondary"
+                  onClick={handleBack}
+                >
+                  VOLTAR
+                </button>
+                <button
+                  type="button"
+                  disabled={selectedTime === ''}
+                  className="btn primary"
+                  onClick={handleNext}
+                >
+                  AVANÇAR
+                </button>
+              </div>
             </div>
           )}
 
@@ -285,11 +338,25 @@ export default function Appointment() {
                     <div className="inner-info">
                       <label htmlFor="name">
                         Nome:
-                        <input id="name" type="text" />
+                        <input
+                          name="petName"
+                          type="text"
+                          value={petName}
+                          onChange={(e) => setPetName(e.target.value)}
+                          onFocus={handleFocus}
+                        />
+                        {errors.petName && (
+                          <span className="error">{errors.petName}</span>
+                        )}
                       </label>
                       <label htmlFor="breed">
                         Raça:
-                        <select>
+                        <select
+                          name="petBreed"
+                          value={petBreed}
+                          onFocus={handleFocus}
+                          onChange={(e) => setPetBreed(e.target.value)}
+                        >
                           <option value="">Selecione...</option>
                           <option value="Akita">Akita</option>
                           <option value="Beagle">Beagle</option>
@@ -299,6 +366,9 @@ export default function Appointment() {
                             Golden Retriever
                           </option>
                         </select>
+                        {errors.petBreed && (
+                          <span className="error">{errors.petBreed}</span>
+                        )}
                       </label>
                     </div>
                     <div className="inner-info">
@@ -306,67 +376,123 @@ export default function Appointment() {
                         Sexo:
                         <div className="radio-group">
                           <RadioButton
-                            id="male"
+                            id="genderMale"
+                            name="petGender"
                             changed={handleGenderChange}
+                            onFocus={handleFocus}
                             label="Macho"
                             value="male"
-                            isSelected={selectedGender === 'male'}
+                            isSelected={petGender === 'male'}
                           />
                           <RadioButton
-                            id="female"
+                            id="genderFemale"
+                            name="petGender"
                             changed={handleGenderChange}
+                            onFocus={handleFocus}
                             label="Fêmea"
                             value="female"
-                            isSelected={selectedGender === 'female'}
+                            isSelected={petGender === 'female'}
                           />
                         </div>
+                        {errors.petGender && (
+                          <span className="error">{errors.petGender}</span>
+                        )}
                       </div>
-                      <label htmlFor="age">
+                      <label htmlFor="petAge">
                         Idade:
-                        <input id="age" type="text" />
+                        <input
+                          name="petAge"
+                          type="number"
+                          min={1}
+                          value={petAge}
+                          onFocus={handleFocus}
+                          onChange={(e) => setPetAge(e.target.value)}
+                        />
+                        {errors.petAge && (
+                          <span className="error">{errors.petAge}</span>
+                        )}
                       </label>
                     </div>
                   </div>
                 </div>
-
                 <div>
                   <h3>Dados do tutor</h3>
                   <div className="owner-information">
                     <div>
                       <label htmlFor="full-name">
                         Nome Completo:
-                        <input id="full-name" type="text" />
+                        <input
+                          name="ownerName"
+                          type="text"
+                          value={ownerName}
+                          required
+                          onChange={(e) => setOwnerName(e.target.value)}
+                          onFocus={handleFocus}
+                        />
+                        {errors.ownerName && (
+                          <span className="error">{errors.ownerName}</span>
+                        )}
                       </label>
                     </div>
                     <div>
                       <label htmlFor="email">
                         Email:
-                        <input id="email" type="text" />
+                        <input
+                          name="ownerEmail"
+                          type="email"
+                          value={ownerEmail}
+                          onChange={(e) => setOwnerEmail(e.target.value)}
+                          onFocus={handleFocus}
+                        />
+                        {errors.ownerEmail && (
+                          <span className="error">{errors.ownerEmail}</span>
+                        )}
                       </label>
 
                       <label htmlFor="phone">
                         Telefone:
-                        <input id="phone" type="text" />
+                        <InputMask
+                          name="ownerPhone"
+                          mask="(99) 99999-9999"
+                          value={ownerPhone}
+                          onChange={(e) => setOwnerPhone(e.target.value)}
+                          onFocus={handleFocus}
+                        />
+                        {errors.ownerPhone && (
+                          <span className="error">{errors.ownerPhone}</span>
+                        )}
                       </label>
                     </div>
                   </div>
                 </div>
+                <div>
+                  <Checkbox
+                    id="vaccine"
+                    label="Todas as vacinas em dia."
+                    value={vaccine}
+                    changed={(e) => setVaccine(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="footer">
+                <button
+                  type="button"
+                  className="btn secondary"
+                  onClick={handleBack}
+                >
+                  VOLTAR
+                </button>
+                <button
+                  type="button"
+                  className="btn primary"
+                  onClick={handleNext}
+                >
+                  AVANÇAR
+                </button>
               </div>
             </div>
           )}
-
-          <div className="footer">
-            <button
-              type="button"
-              className="btn secondary"
-              onClick={handleBack}
-            >
-              VOLTAR
-            </button>
-            <button type="button" className="btn primary" onClick={handleNext}>
-              AVANÇAR
-            </button>
-          </div>
         </div>
       </form>
     </>

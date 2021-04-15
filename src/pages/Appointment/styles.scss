@@ -203,6 +203,7 @@
                   .inner-info {
                       display: flex;
                       justify-content: space-between;
+                      height: 75px;
 
                       label {
                           display: flex;
@@ -234,6 +235,7 @@
                    div {
                         display: flex;
                         justify-content: space-between;
+                        height: 75px;
 
                         label {
                             display: flex;
@@ -392,7 +394,10 @@
                         background-color: darken($color-primary, 5%);
                         transition: all 0.3s ease;
                     }
-    
+                    
+                    &:disabled {
+                        background-color: rgba(45, 51, 50, 0.25);
+                    }
                 }
 
                 &.secondary {
@@ -402,5 +407,10 @@
                 }
             }
         }
+    }
+
+    .error {
+        color: rgba(255, 51, 51, 0.9);
+        font-size: 1.2rem;
     }
 }
